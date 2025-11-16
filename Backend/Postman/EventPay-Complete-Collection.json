@@ -1,0 +1,549 @@
+{
+  "info": {
+    "name": "EventPay - Complete API Collection",
+    "description": "All 20 endpoints with test data",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "orgId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "eventId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "studentId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "stallId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "qrToken",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/actuator/health",
+          "host": ["{{baseUrl}}"],
+          "path": ["actuator", "health"]
+        }
+      }
+    },
+    {
+      "name": "2. Login - Super Admin",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 200) {",
+              "    var jsonData = pm.response.json();",
+              "    pm.collectionVariables.set('token', jsonData.data.accessToken);",
+              "    console.log('Super Admin Token saved');",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"admin@eventpay.com\",\n  \"password\": \"admin123\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/login",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "auth", "login"]
+        }
+      }
+    },
+    {
+      "name": "3. Create Organization",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 200 || pm.response.code === 201) {",
+              "    var jsonData = pm.response.json();",
+              "    pm.collectionVariables.set('orgId', jsonData.data.id);",
+              "    console.log('Organization ID: ' + jsonData.data.id);",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Authorization", "value": "Bearer {{token}}"},
+          {"key": "Content-Type", "value": "application/json"}
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Tech University\",\n  \"email\": \"admin@techuniv.edu\",\n  \"password\": \"university123\",\n  \"contactPerson\": \"John Doe\",\n  \"phone\": \"9841234567\",\n  \"address\": \"Kathmandu, Nepal\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/organizations",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "organizations"]
+        }
+      }
+    },
+    {
+      "name": "4. Get All Organizations",
+      "request": {
+        "method": "GET",
+        "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+        "url": {
+          "raw": "{{baseUrl}}/api/organizations",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "organizations"]
+        }
+      }
+    },
+    {
+      "name": "5. Get Organization by ID",
+      "request": {
+        "method": "GET",
+        "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+        "url": {
+          "raw": "{{baseUrl}}/api/organizations/{{orgId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "organizations", "{{orgId}}"]
+        }
+      }
+    },
+    {
+      "name": "6. Login - Organization Admin",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 200) {",
+              "    var jsonData = pm.response.json();",
+              "    pm.collectionVariables.set('token', jsonData.data.accessToken);",
+              "    console.log('Org Admin Token saved');",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"admin@techuniv.edu\",\n  \"password\": \"university123\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/login",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "auth", "login"]
+        }
+      }
+    },
+    {
+      "name": "7. Create Event",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 200 || pm.response.code === 201) {",
+              "    var jsonData = pm.response.json();",
+              "    pm.collectionVariables.set('eventId', jsonData.data.id);",
+              "    console.log('Event ID: ' + jsonData.data.id);",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Authorization", "value": "Bearer {{token}}"},
+          {"key": "Content-Type", "value": "application/json"}
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Tech Fest 2024\",\n  \"startTime\": \"2024-12-01T10:00:00Z\",\n  \"endTime\": \"2024-12-01T18:00:00Z\",\n  \"venue\": \"Main Campus Hall\",\n  \"defaultMoney\": 500.00,\n  \"defaultStudentPassword\": \"student123\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/orgs/{{orgId}}/events",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "orgs", "{{orgId}}", "events"]
+        }
+      }
+    },
+    {
+      "name": "8. Get Event by ID",
+      "request": {
+        "method": "GET",
+        "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+        "url": {
+          "raw": "{{baseUrl}}/api/events/{{eventId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "events", "{{eventId}}"]
+        }
+      }
+    },
+    {
+      "name": "9. Get Events by Organization",
+      "request": {
+        "method": "GET",
+        "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+        "url": {
+          "raw": "{{baseUrl}}/api/orgs/{{orgId}}/events",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "orgs", "{{orgId}}", "events"]
+        }
+      }
+    },
+    {
+      "name": "10. Update Event Status to ACTIVE",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {"key": "Authorization", "value": "Bearer {{token}}"},
+          {"key": "Content-Type", "value": "application/json"}
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"ACTIVE\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/events/{{eventId}}/status",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "events", "{{eventId}}", "status"]
+        }
+      }
+    },
+    {
+      "name": "11. Create Volunteer",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Authorization", "value": "Bearer {{token}}"},
+          {"key": "Content-Type", "value": "application/json"}
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Jane Volunteer\",\n  \"phone\": \"9876543210\",\n  \"email\": \"jane@volunteer.com\",\n  \"password\": \"volunteer123\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/events/{{eventId}}/volunteers",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "events", "{{eventId}}", "volunteers"]
+        }
+      }
+    },
+    {
+      "name": "12. Login - Volunteer",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 200) {",
+              "    var jsonData = pm.response.json();",
+              "    pm.collectionVariables.set('token', jsonData.data.accessToken);",
+              "    console.log('Volunteer Token saved');",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"9876543210\",\n  \"password\": \"volunteer123\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/login",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "auth", "login"]
+        }
+      }
+    },
+    {
+      "name": "13. Register Student",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 200 || pm.response.code === 201) {",
+              "    var jsonData = pm.response.json();",
+              "    pm.collectionVariables.set('studentId', jsonData.data.studentId);",
+              "    console.log('Student ID: ' + jsonData.data.studentId);",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Authorization", "value": "Bearer {{token}}"},
+          {"key": "Content-Type", "value": "application/json"}
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Raj Kumar\",\n  \"phone\": \"9851234567\",\n  \"school\": \"ABC High School\",\n  \"visitedBefore\": false\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/events/{{eventId}}/students",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "events", "{{eventId}}", "students"]
+        }
+      }
+    },
+    {
+      "name": "14. Create Stall",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 200 || pm.response.code === 201) {",
+              "    var jsonData = pm.response.json();",
+              "    pm.collectionVariables.set('stallId', jsonData.data.id);",
+              "    pm.collectionVariables.set('qrToken', jsonData.data.qrToken);",
+              "    console.log('Stall ID: ' + jsonData.data.id);",
+              "    console.log('QR Token saved');",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Authorization", "value": "Bearer {{token}}"},
+          {"key": "Content-Type", "value": "application/json"}
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Food Stall A\",\n  \"type\": \"FOOD\",\n  \"ownerName\": \"Ram Kumar\",\n  \"phone\": \"9841111111\",\n  \"email\": \"ram@foodstall.com\",\n  \"password\": \"stall123\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/events/{{eventId}}/stalls",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "events", "{{eventId}}", "stalls"]
+        }
+      }
+    },
+    {
+      "name": "15. Get Stalls by Event",
+      "request": {
+        "method": "GET",
+        "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+        "url": {
+          "raw": "{{baseUrl}}/api/events/{{eventId}}/stalls",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "events", "{{eventId}}", "stalls"]
+        }
+      }
+    },
+    {
+      "name": "16. Login - Student",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 200) {",
+              "    var jsonData = pm.response.json();",
+              "    pm.collectionVariables.set('token', jsonData.data.accessToken);",
+              "    console.log('Student Token saved');",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"9851234567\",\n  \"password\": \"student123\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/login",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "auth", "login"]
+        }
+      }
+    },
+    {
+      "name": "17. Get My Wallet",
+      "request": {
+        "method": "GET",
+        "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+        "url": {
+          "raw": "{{baseUrl}}/api/me/wallet",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "me", "wallet"]
+        }
+      }
+    },
+    {
+      "name": "18. Pay by QR Code",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Authorization", "value": "Bearer {{token}}"},
+          {"key": "Content-Type", "value": "application/json"}
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"qrToken\": \"{{qrToken}}\",\n  \"amount\": 150.00\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/pay/qr",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "pay", "qr"]
+        }
+      }
+    },
+    {
+      "name": "19. Pay by Phone",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Authorization", "value": "Bearer {{token}}"},
+          {"key": "Content-Type", "value": "application/json"}
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"stallPhone\": \"9841111111\",\n  \"amount\": 100.00\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/pay/phone",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "pay", "phone"]
+        }
+      }
+    },
+    {
+      "name": "20. Get My Transactions",
+      "request": {
+        "method": "GET",
+        "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+        "url": {
+          "raw": "{{baseUrl}}/api/me/transactions?page=0&size=20",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "me", "transactions"],
+          "query": [
+            {"key": "page", "value": "0"},
+            {"key": "size", "value": "20"}
+          ]
+        }
+      }
+    },
+    {
+      "name": "21. Get Stall Transactions",
+      "request": {
+        "method": "GET",
+        "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+        "url": {
+          "raw": "{{baseUrl}}/api/stalls/{{stallId}}/transactions?page=0&size=20",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "stalls", "{{stallId}}", "transactions"],
+          "query": [
+            {"key": "page", "value": "0"},
+            {"key": "size", "value": "20"}
+          ]
+        }
+      }
+    },
+    {
+      "name": "22. Export Student Registrations (CSV)",
+      "request": {
+        "method": "GET",
+        "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+        "url": {
+          "raw": "{{baseUrl}}/api/events/{{eventId}}/reports/registrations?format=csv",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "events", "{{eventId}}", "reports", "registrations"],
+          "query": [{"key": "format", "value": "csv"}]
+        }
+      }
+    },
+    {
+      "name": "23. Actuator - Info",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/actuator/info",
+          "host": ["{{baseUrl}}"],
+          "path": ["actuator", "info"]
+        }
+      }
+    },
+    {
+      "name": "24. Actuator - Metrics",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/actuator/metrics",
+          "host": ["{{baseUrl}}"],
+          "path": ["actuator", "metrics"]
+        }
+      }
+    },
+    {
+      "name": "25. Actuator - Prometheus",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/actuator/prometheus",
+          "host": ["{{baseUrl}}"],
+          "path": ["actuator", "prometheus"]
+        }
+      }
+    }
+  ]
+}
